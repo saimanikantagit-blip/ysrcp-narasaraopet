@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: ysrcp-narasaraopet
+    runtime: node
+    plan: starter
+    buildCommand: npm install --omit=dev
+    startCommand: npm start
+    healthCheckPath: /api/health
+    disk:
+      name: ysrcp-data
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: HOST
+        value: 0.0.0.0
+      - key: DATABASE_PATH
+        value: /var/data/ysrcp.sqlite
+      - key: BOOTSTRAP_ADMIN_USERNAME
+        value: admin
+      - key: BOOTSTRAP_ADMIN_NAME
+        value: Super Administrator
+      - key: BOOTSTRAP_ADMIN_PASSWORD
+        generateValue: true
