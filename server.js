@@ -512,6 +512,25 @@ const routes = async (req, res, pathname) => {
   }
   if (req.method === "GET" && pathname === "/api/me")
     return json(res, 200, { user: u, roles });
+  if (req.method === "PATCH" && pathname === "/api/me/profile") {
+    const b = await readBody(req),
+      fullName = String(b.full_name || "").trim(),
+      email = String(b.email || "").trim().toLowerCase(),
+      phone = String(b.phone || "").trim();
+    if (!fullName || fullName.length > 160)
+      return json(res, 400, { error: "Name is required and must be at most 160 characters." });
+    if (email && (email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)))
+      return json(res, 400, { error: "Enter a valid email address." });
+    if (phone.length > 40)
+      return json(res, 400, { error: "Phone number must be at most 40 characters." });
+    db.prepare("UPDATE users SET full_name=?,email=?,phone=? WHERE id=?")
+      .run(fullName, email || null, phone || null, u.id);
+    audit(u.id, "update_profile", "user", u.id);
+    const updated = db.prepare(
+      "SELECT id,username,full_name,role,status,jurisdiction,email,phone,must_change_password FROM users WHERE id=?",
+    ).get(u.id);
+    return json(res, 200, { user: updated });
+  }
   if (req.method === "GET" && pathname === "/api/dashboard") {
     const all = u.role === roles[0];
     const count = (table) =>

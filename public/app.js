@@ -505,8 +505,23 @@ function reviewPost(post) {
 async function myProfile() {
   $("#app").classList.remove("password-locked");
   $("#content").innerHTML =
-    `<div class="panel"><div class="panel-head"><div><h2>My profile</h2><p>Account and security details</p></div></div><div class="list-row"><div>Name<small>${esc(me.full_name)}</small></div></div><div class="list-row"><div>Username<small>${esc(me.username)}</small></div></div><div class="list-row"><div>Role<small>${esc(me.role)}</small></div></div><div class="list-row"><div>Jurisdiction<small>${esc(me.jurisdiction || "Not assigned")}</small></div></div><div style="margin-top:15px"><button class="button primary" id="change-password">Change password</button></div></div>`;
+    `<div class="panel"><div class="panel-head"><div><h2>My profile</h2><p>Update your contact details. Login ID, role, and jurisdiction are managed by Super Admin.</p></div></div><form id="profile-form"><div class="form-grid"><label>Full name<input name="full_name" value="${esc(me.full_name)}" maxlength="160" required></label><label>Login ID<input value="${esc(me.username)}" disabled></label><label>Email<input name="email" type="email" value="${esc(me.email || "")}" maxlength="254"></label><label>Phone<input name="phone" value="${esc(me.phone || "")}" maxlength="40" inputmode="tel"></label><label>Role<input value="${esc(me.role)}" disabled></label><label>Jurisdiction<input value="${esc(me.jurisdiction || "Not assigned")}" disabled></label></div><div class="form-actions"><button class="button primary">Save profile</button><button type="button" class="button" id="change-password">Change password</button></div></form></div>`;
   $("#change-password").onclick = () => passwordScreen(false);
+  $("#profile-form").onsubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const result = await api("/me/profile", {
+        method: "PATCH",
+        body: JSON.stringify(Object.fromEntries(new FormData(e.currentTarget))),
+      });
+      me = { ...me, ...result.user };
+      shell();
+      toast("Profile updated");
+      await myProfile();
+    } catch (err) {
+      toast(err.message);
+    }
+  };
 }
 function passwordScreen(forced) {
   $("#app").classList.toggle("password-locked", forced);
