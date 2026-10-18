@@ -1,4 +1,4 @@
-const CACHE_NAME = "ysrcp-shell-v2";
+const CACHE_NAME = "ysrcp-shell-v3";
 const SHELL_ASSETS = [
   "/",
   "/styles.css",
@@ -43,6 +43,23 @@ self.addEventListener("fetch", (event) => {
     return;
   }
   event.respondWith(
-    caches.match(request).then((cached) => cached || fetch(request)),
+    fetch(request)
+      .then((response) => {
+        if (response.ok) {
+          const copy = response.clone();
+          event.waitUntil(
+            caches.open(CACHE_NAME).then((cache) => cache.put(request, copy)),
+          );
+        }
+        return response;
+      })
+      .catch(async () => {
+        const cached = await caches.match(request);
+        if (cached) return cached;
+        return new Response("Offline and this file is not cached.", {
+          status: 503,
+          headers: { "Content-Type": "text/plain; charset=utf-8" },
+        });
+      }),
   );
 });
