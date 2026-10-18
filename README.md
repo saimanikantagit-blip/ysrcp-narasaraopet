@@ -48,3 +48,4 @@ The responsive web app can be installed as a Progressive Web App from a supporte
 ## Task deadline notifications
 
 The server checks assigned tasks at startup and every minute. It sends one due-soon notification on the due date or the day before, then at most one overdue reminder per day until the task is submitted, completed, or cancelled. Reminders go to the assigned user and task creator when their accounts are active.
+Directory phone, WhatsApp, and email actions open the corresponding app for the authorized contact. The interface does not claim a call or message was completed.
