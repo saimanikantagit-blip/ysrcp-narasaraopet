@@ -44,3 +44,7 @@ Super Admin can set the organization contact email, phone, and office address, a
 ## Android installation
 
 The responsive web app can be installed as a Progressive Web App from a supported Android browser. Deploy it over HTTPS, open the site in Chrome, then use the browser menu's Install app or Add to Home screen action. The service worker caches only the public app shell and static assets; all API requests and private organizational data remain network-only. This provides an installable Android web experience, not a native Android package.
+
+## Task deadline notifications
+
+The server checks assigned tasks at startup and every minute. It sends one due-soon notification on the due date or the day before, then at most one overdue reminder per day until the task is submitted, completed, or cancelled. Reminders go to the assigned user and task creator when their accounts are active.
