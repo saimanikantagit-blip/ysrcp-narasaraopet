@@ -129,7 +129,7 @@ const routes = async (req, res, pathname) => {
   }
   if (req.method === 'GET' && pathname === '/api/contacts') {
     const q = `%${String(new URL(req.url, 'http://local').searchParams.get('q') || '').replace(/[%_]/g, '')}%`;
-    const rows = u.role === roles[0] ? db.prepare('SELECT * FROM contacts WHERE name LIKE ? OR phone LIKE ? OR designation LIKE ? ORDER BY name LIMIT 300').all(q,q,q) : db.prepare('SELECT * FROM contacts WHERE (name LIKE ? OR phone LIKE ? OR designation LIKE ?) AND (jurisdiction=? OR mandal=? OR village=?) ORDER BY name LIMIT 300').all(q,q,q,u.jurisdiction||'',u.jurisdiction||'',u.jurisdiction||'');
+    const rows = u.role === roles[0] ? db.prepare('SELECT * FROM contacts WHERE name LIKE ? OR phone LIKE ? OR designation LIKE ? ORDER BY name LIMIT 300').all(q,q,q) : db.prepare('SELECT id,name,designation,role,phone,whatsapp,email,mandal,village,jurisdiction,status,verified,created_at,updated_at FROM contacts WHERE (name LIKE ? OR phone LIKE ? OR designation LIKE ?) AND (jurisdiction=? OR mandal=? OR village=?) ORDER BY name LIMIT 300').all(q,q,q,u.jurisdiction||'',u.jurisdiction||'',u.jurisdiction||'');
     return json(res, 200, rows);
   }
   if (req.method === 'POST' && pathname === '/api/contacts') {
