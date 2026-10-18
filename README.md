@@ -15,6 +15,8 @@ The first Super Admin is created only when there are no users and `BOOTSTRAP_ADM
 
 ## Node.js deployment
 
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/saimanikantagit-blip/ysrcp-narasaraopet)
+
 The Node.js backend is `server.js`; `npm start` runs it. `render.yaml` configures a Render web service with the `/api/health` health check, a generated initial Super Admin password, and a persistent disk mounted at `/var/data` for the SQLite database and private documents. The production server binds to `0.0.0.0` and uses the host-provided `PORT`.
 
 To create a live deployment, sign in to Render, create a Blueprint from this public GitHub repository, review the service and persistent-disk plan and its charges, then deploy. Render provides the live `onrender.com` URL after the first successful deployment. Save the generated `BOOTSTRAP_ADMIN_PASSWORD` from the service environment and use login ID `admin`. GitHub stores the source; Render runs the Node.js backend. A persistent disk is required because Render preserves only files under the disk mount across deploys and restarts. See [Render web services](https://render.com/docs/web-services), [Blueprint configuration](https://render.com/docs/blueprint-spec), and [persistent disks](https://render.com/docs/disks).

@@ -3,6 +3,7 @@ services:
     name: ysrcp-narasaraopet
     runtime: node
     plan: starter
+    autoDeployTrigger: "off"
     buildCommand: npm install --omit=dev
     startCommand: npm start
     healthCheckPath: /api/health
